@@ -1,0 +1,23 @@
+{
+  "name": "public",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "jshint": "jshint js/",
+		"bundle": "cd js && rollup -c rollup.config.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "bootstrap": "^4.6.0",
+    "vue": "^2.6.12",
+    "vue-i18n": "^8.24.3",
+    "vue-router": "^3.5.1"
+  },
+  "devDependencies": {
+    "jshint": "^2.12.0",
+    "rollup": "^2.45.1"
+  }
+}
