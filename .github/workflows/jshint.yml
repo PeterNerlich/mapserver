@@ -13,8 +13,8 @@ jobs:
     - name: apt
       run: sudo apt-get install -y nodejs npm
 
-    - name: jshint install
-      run: sudo npm i -g jshint
+    - name: npm install
+      run: cd public && npm ci
 
     - name: jshint run
-      run: cd public/js && jshint
+      run: cd public && npm run jshint

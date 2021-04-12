@@ -1,20 +1,22 @@
-FROM golang:1.16.3-alpine as builder
+FROM node:15.14.0-alpine as stage1
+COPY public /public
+RUN cd /public && \
+	npm ci && \
+	npm run jshint && \
+	npm run bundle
 
-RUN apk --no-cache add ca-certificates gcc libc-dev nodejs npm git make
-
-VOLUME /root/go
-COPY ./ /server
-RUN cd /server &&\
- npm install -g jshint rollup &&\
- make test jshint all
+FROM golang:1.16.3 as stage2
+COPY . /data
+COPY --from=stage1 /public /data/public
+RUN cd /data && \
+	go vet && \
+	go test ./... && \
+	GOOS=linux GOARCH=amd64 go build .
 
 FROM alpine:3.13.4
 RUN apk --no-cache add ca-certificates curl
 WORKDIR /app
-COPY --from=builder /server/output/mapserver-linux-x86_64 /bin/mapserver
-
-HEALTHCHECK --interval=5s --timeout=3s \
-  CMD curl -f http://localhost:8080/api/config || exit 1
+COPY --from=stage2 /data/mapserver /bin/mapserver
 
 EXPOSE 8080
 CMD ["/bin/mapserver"]
